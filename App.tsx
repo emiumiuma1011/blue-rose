@@ -1,13 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import RoseVisualizer from './components/RoseVisualizer';
-import UIOverlay from './components/UIOverlay';
+import RoseVisualizer from './components/RoseVisualizer.tsx';
+import UIOverlay from './components/UIOverlay.tsx';
 
 const App: React.FC = () => {
   const [isAssembled, setIsAssembled] = useState(false);
 
   useEffect(() => {
-    // Start assembly animation after a short delay
     const timer = setTimeout(() => setIsAssembled(true), 1500);
     return () => clearTimeout(timer);
   }, []);
