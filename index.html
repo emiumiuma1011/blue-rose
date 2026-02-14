@@ -11,8 +11,8 @@
             margin: 0;
             overflow: hidden;
             background-color: #050510;
-            color: #4ade80; /* 錯誤提示顏色 */
-            font-family: sans-serif;
+            color: #4ade80;
+            font-family: 'Georgia', serif;
         }
         #root {
             width: 100vw;
@@ -26,17 +26,24 @@
             align-items: center;
             justify-content: center;
             background: #050510;
-            z-index: 50;
+            z-index: 100;
+        }
+        .debug-hint {
+            margin-top: 20px;
+            font-size: 10px;
+            color: #444;
+            max-width: 80%;
+            text-align: center;
         }
     </style>
 <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@19.2.4",
-    "react-dom": "https://esm.sh/react-dom@19.2.4",
-    "react-dom/client": "https://esm.sh/react-dom@19.2.4/client",
-    "three": "https://esm.sh/three@0.182.0",
-    "three/addons/": "https://esm.sh/three@0.182.0/examples/jsm/",
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "three": "https://esm.sh/three@0.170.0",
+    "three/addons/": "https://esm.sh/three@0.170.0/examples/jsm/",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/",
     "three/": "https://esm.sh/three@^0.182.0/"
@@ -46,25 +53,32 @@
 </head>
 <body>
     <div id="loading-screen">
-        <div class="text-blue-400 animate-pulse tracking-widest">LOADING MIDNIGHT ROSE...</div>
-        <div id="error-console" class="mt-4 text-red-500 text-xs max-w-md px-4 text-center"></div>
+        <div class="text-blue-400 animate-pulse tracking-[0.3em] font-light">INITIATING ROSE...</div>
+        <div id="error-console" class="mt-4 text-red-500 text-xs font-mono max-w-md px-4 text-center"></div>
+        <div id="timeout-hint" class="debug-hint hidden">
+            If it takes too long, please check if your browser supports WebGL or press F12 to see the console.
+        </div>
     </div>
     <div id="root"></div>
 
     <script type="text/javascript">
-        // 全局錯誤捕獲，幫助用戶在手機或瀏覽器上直接看到報錯
+        // 捕獲加載時的任何錯誤
         window.onerror = function(msg, url, line, col, error) {
             const console = document.getElementById('error-console');
-            if (console) console.innerText = "Error: " + msg + "\nLine: " + line;
+            if (console) console.innerText = "Runtime Error: " + msg;
             return false;
         };
-        window.addEventListener('unhandledrejection', function (event) {
-            const console = document.getElementById('error-console');
-            if (console) console.innerText = "Promise Error: " + event.reason;
-        });
+        
+        // 如果 5 秒後還在 Loading，顯示提示
+        setTimeout(() => {
+            const hint = document.getElementById('timeout-hint');
+            const loading = document.getElementById('loading-screen');
+            if (loading && loading.style.display !== 'none' && hint) {
+                hint.classList.remove('hidden');
+            }
+        }, 5000);
     </script>
     
-    <!-- 核心：添加 .tsx 後綴，這是瀏覽器原生加載的關鍵 -->
     <script type="module" src="./index.tsx"></script>
 </body>
 </html>
